@@ -1,0 +1,63 @@
+/* Scanline overlay — only when Warzone Mode is on */
+html[data-warzone="on"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1500;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+html[data-warzone="on"] #menubar {
+  border-bottom-color: rgba(245, 197, 24, 0.25);
+}
+
+html[data-warzone="on"] .logo {
+  color: #f5c518;
+  filter: drop-shadow(0 0 8px rgba(245, 197, 24, 0.6));
+}
+
+html[data-warzone="on"] #dock {
+  border-color: rgba(245, 197, 24, 0.2);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(245, 197, 24, 0.08) inset;
+}/* Scanline overlay — only when Warzone Mode is on */
+html[data-warzone="on"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1500;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+html[data-warzone="on"] #menubar {
+  border-bottom-color: rgba(245, 197, 24, 0.25);
+}
+
+html[data-warzone="on"] .logo {
+  color: #f5c518;
+  filter: drop-shadow(0 0 8px rgba(245, 197, 24, 0.6));
+}
+
+html[data-warzone="on"] #dock {
+  border-color: rgba(245, 197, 24, 0.2);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(245, 197, 24, 0.08) inset;
+}

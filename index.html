@@ -1,0 +1,70 @@
+<html lang="en" data-theme="dark" data-warzone="on">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1." />
+    <meta name="theme-color" content="#0a0e14" />
+    <title>DriftOS</title>
+
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="assest/icons/favicon.svg" />
+
+      <link rel="stylesheet" href="styles/base.css?v=1" />
+      <link rel="stylesheet" href="styles/layout.css?v=1" />
+      <link rel="stylesheet" href="styles/drift.css?v=1" />
+      <link rel="stylesheet" href="styles/warzone.css?v=1" />
+
+</head>
+<body>
+
+    <!-- Boot Screeen -->
+     <div id="boot-screen">
+       <div class="wave"></div>
+       <div class="wave wave-2"></div>
+       <div class="brand">
+          <h1>DriftOS</h1>
+          <p>Flow through your browser</p>
+     </div>
+   </div>
+
+   <!-- Desktop -->
+   <div id="desktop" hidden>
+
+      <!-- Menu Bar -->
+      <header id="menubar">
+        <div class="menubar-left">
+            <span class="logo">◉</span>
+        </div>
+
+        <div class="menubar-right" id="menubar-tray">
+            <button class="tray-btn" id="theme-toggle" title="Toggle theme">🌙</button>
+            <button class="tray-btn" id="warzone-toggle" title="Warzone Mode">🎯</button>
+            <span class="tray-item " id="battery" title="Battery">
+                <span id="battery-icon">🔋</span>
+                <span id="battery-pct">--%</span>
+            </span>
+            <span class="tray-item" id="clock">--:--</span>
+        </div>
+      </header>
+
+      <!-- Layers -->
+      <div id="widgets"></div>
+      <div id="windows"></div>
+          
+       <!-- Dock -->
+       <div id="dock-wrap">
+         <div id="dock">
+            <button class="dock-item" data-app="terminal" title="Terminal">💻</button>
+            <button class="dock-item" data-app="files"    title="Files">📁</button>
+            <button class="dock-item" data-app="editor"   title="Editor">📝</button>
+            <button class="dock-item" data-app="code"     title="Live Code">🧪</button>
+            <button class="dock-item" data-app="browser"  title="Browser">🌐</button>
+            <button class="dock-item" data-app="settings" title="Settings">⚙️</button>
+        </div>
+       </div>
+
+   </div>
+
+   <script type="module" src="kernel.js"></script>
+</body>
+</html>
+
