@@ -1,0 +1,15 @@
+{
+    "name": "DriftOS",
+    "short_name": "DriftOS",
+    "description": "Flow through your browser — a lightweight web OS",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#0a0e14",
+    "icons": [
+      {
+        "src": "assets/icons/favicon.svg",
+        "sizes": "any",
+        "type": "image/svg+xml"
+      }
+    ]
+}

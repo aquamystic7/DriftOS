@@ -1,0 +1,73 @@
+/* window.css - my windows */
+/* TODO: maybe move some of this into base later */
+
+.drift-window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    min-height: 200px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 24px 60px rgba( 0, 0, 0, .5);
+    overflow: hidden;
+    color: var(--text-primary);
+    animation: win-in .35s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+
+.drift-window.focused {
+    box-shadow:
+      0 32px 80px rgb(0, 0, 0, .6),
+      0 0 0 1px var(--accent) inset;
+}
+
+.drift-window.minimized { display:none; }
+.drift-window.maximize { border-radius: 0; }
+
+@keyframes win-in {
+    from { opacity: 0; transform: scale(.94) translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* titlebar */
+.window-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 38px;
+    padding: 0 12px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    cursor: grab;
+    user-select: none;
+}
+
+.window-titlebar:active { cursor: grabbing; }
+
+.window-controls { display: flex; gap: 8px; }
+
+.window-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    transition: transform .15s, filter .15s;
+}
+
+.window-btn:hover { transform: scale(1.15); filter: brightness(1.2); }
+
+.window-btn.close    { background: #ff5f57; }
+.window-btn.minimize { background: #febc2e; }
+.window-btn.maximize { background: #28c840; }
+
+.window-title {
+    flex: 1;
+    font-size: 15px;
+    text-align: center;
+    opacity: .9;
+    pointer-events: none;
+}
+
