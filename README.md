@@ -6,7 +6,8 @@ started this bc I got tired of everyone saying "just use React" for everything.
 You don't need React to move a div around. You need mousedown, mousemove, and
 about 40 lines of code. So I built it. And then I kept adding stuff.
 
-![boot](screenshots/boot.png)
+<img width="1919" height="1079" alt="Screenshot 2026-09-18 002622" src="https://github.com/user-attachments/assets/356b6f14-39ef-49e7-991d-449feb5ebc41" />
+
 
 it's not done. it's not close to done. but it boots and you can drag windows
 around and it looks decent so I'm putting it out there.
