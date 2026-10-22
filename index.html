@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Drift OS</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="boot">
+    <div class="boot-logo">Drift</div>
+    <div class="boot-bar"><div class="boot-fill"></div></div>
+  </div>
+
+  <div id="menubar" hidden>
+    <div class="mb-left">
+      <span id="mb-apple" title="About"></span>
+      <span id="mb-active">Drift</span>
+    </div>
+    <div class="mb-right">
+      <span id="mb-date"></span>
+      <span id="mb-time"></span>
+    </div>
+  </div>
+
+  <div id="about" hidden>
+    <div class="about-logo">Drift</div>
+    <div class="about-rows">
+      <div class="about-row"><span>Version</span><span>0.2 "Cosmonaut"</span></div>
+      <div class="about-row"><span>Shell</span><span>Drift Shell (mac style)</span></div>
+      <div class="about-row"><span>Windows</span><span id="about-windows">0</span></div>
+    </div>
+    <div class="about-foot">Web OS. No React. No build step.</div>
+  </div>
+
+  <div id="desktop" hidden>
+    <div id="wallpaper"></div>
+    <div id="windows"></div>
+  </div>
+
+  <div id="dock" hidden></div>
+
+  <div id="spotlight" hidden>
+    <input id="spotlight-input" placeholder="Spotlight Search" spellcheck="false" />
+    <div id="spotlight-results"></div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <script type="module" src="boot.js"></script>
+</body>
+</html>
