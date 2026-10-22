@@ -45,7 +45,12 @@ export async function boot() {
   const modules = await Promise.all([
     import('./apps/notes.js'),
     import('./apps/terminal.js'),
-    import('./apps/files.js')
+    import('./apps/files.js'),
+    import('./apps/browser.js'),
+    import('./apps/drift.js'),
+    import('./apps/calculator.js'),
+    import('./apps/calendar.js'),
+    import('./apps/clock.js')
   ]);
   modules.forEach(m => registerApp(m.default));
 

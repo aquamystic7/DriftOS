@@ -78,6 +78,12 @@ class DriftWindow extends HTMLElement {
       if (e.target.closest('button')) return;
       WM.focus(this);
       bar.classList.add('grabbing');
+      // macOS-style unsnap: dragging a maximized/snap-zoned window restores it
+      if (this.dataset.maxed === '1' && this._prev && this._prev.width) {
+        Object.assign(this.style, this._prev);
+        this.dataset.maxed = '0';
+        delete this.dataset.zone;
+      }
       const r = this.getBoundingClientRect();
       drag = { ox: e.clientX - r.left, oy: e.clientY - r.top, win: this };
     });
@@ -92,12 +98,16 @@ class DriftWindow extends HTMLElement {
       y = Math.max(0, Math.min(y, p.height - 40));
       this.style.left = x + 'px';
       this.style.top = y + 'px';
+      WM.updateSnapGhost(this, e.clientX, e.clientY, p);
     };
 
     let resize = null;
 
-    const onUp = () => {
-      if (drag) bar.classList.remove('grabbing');
+    const onUp = e => {
+      if (drag) {
+        bar.classList.remove('grabbing');
+        WM.applySnap(this, e.clientX, e.clientY);
+      }
       drag = null;
       resize = null;
     };
@@ -153,6 +163,64 @@ if (!customElements.get('drift-window')) {
 export const WM = {
   init(el) {
     root = el;
+    this.ghost = document.createElement('div');
+    this.ghost.className = 'snap-ghost';
+    this.ghost.hidden = true;
+    root.appendChild(this.ghost);
+  },
+
+  // zone: null | 'full' | 'left' | 'right' for current pointer position
+  snapZone(px, py, p) {
+    const edge = 14;
+    const tolerance = 18;
+    if (py - p.top < edge) return 'full';
+    if (px - p.left < tolerance) return 'left';
+    if (p.right - px < tolerance) return 'right';
+    return null;
+  },
+
+  zoneRect(zone, p) {
+    if (zone === 'full') return { left: 0, top: 0, width: p.width, height: p.height };
+    if (zone === 'left') return { left: 0, top: 0, width: Math.round(p.width / 2), height: p.height };
+    if (zone === 'right') return { left: Math.round(p.width / 2), top: 0, width: p.width - Math.round(p.width / 2), height: p.height };
+    return null;
+  },
+
+  updateSnapGhost(win, px, py, p) {
+    const zone = this.snapZone(px, py, p);
+    if (!zone) {
+      this.ghost.hidden = true;
+      return;
+    }
+    const r = this.zoneRect(zone, p);
+    const g = this.ghost;
+    g.hidden = false;
+    g.style.left = r.left + 'px';
+    g.style.top = r.top + 'px';
+    g.style.width = r.width + 'px';
+    g.style.height = r.height + 'px';
+  },
+
+  applySnap(win, px, py) {
+    const p = win.parentElement.getBoundingClientRect();
+    const zone = this.snapZone(px, py, p);
+    this.ghost.hidden = true;
+    if (!zone) return;
+    const r = this.zoneRect(zone, p);
+    if (!win.dataset.maxed || win.dataset.maxed !== '1') {
+      win._prev = {
+        left: win.style.left,
+        top: win.style.top,
+        width: win.style.width,
+        height: win.style.height
+      };
+    }
+    win.style.left = r.left + 'px';
+    win.style.top = r.top + 'px';
+    win.style.width = r.width + 'px';
+    win.style.height = r.height + 'px';
+    win.dataset.maxed = '1';
+    win.dataset.zone = zone;
   },
 
   create({ title, appId, icon, width, height }) {
@@ -178,11 +246,21 @@ export const WM = {
   },
 
   minimize(win) {
-    if (!win) return;
+    if (!win || win.classList.contains('minimized')) return;
     win.classList.add('minimized');
     win.classList.remove('active');
-    win.style.display = 'none';
+    win.classList.add('zooming-out');
+    setTimeout(() => {
+      if (!win || !win.classList.contains('minimized')) return;
+      win.style.display = 'none';
+      win.classList.remove('zooming-out');
+    }, 240);
     bus.emit('wm:changed');
+  },
+
+  zoom(win) {
+    const max = win && win.querySelector ? win.querySelector('.tl-btn.max') : null;
+    if (max) max.click();
   },
 
   focus(win) {
@@ -190,6 +268,8 @@ export const WM = {
     if (win.classList.contains('minimized')) {
       win.classList.remove('minimized');
       win.style.display = '';
+      win.classList.add('zooming-in');
+      setTimeout(() => win.classList.remove('zooming-in'), 200);
     }
     win.style.zIndex = ++zTop;
     root.querySelectorAll('drift-window').forEach(w => w.classList.toggle('active', w === win));

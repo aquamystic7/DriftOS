@@ -16,6 +16,9 @@
     <div class="mb-left">
       <span id="mb-apple" title="About"></span>
       <span id="mb-active">Drift</span>
+      <span class="mb-menu" data-menu="drift">Drift</span>
+      <span class="mb-menu" data-menu="apps">Apps</span>
+      <span class="mb-menu" data-menu="window">Window</span>
     </div>
     <div class="mb-right">
       <span id="mb-date"></span>
@@ -34,8 +37,15 @@
   </div>
 
   <div id="desktop" hidden>
-    <div id="wallpaper"></div>
+    <div id="wallpaper" class="wp-a"></div>
     <div id="windows"></div>
+  </div>
+
+  <div id="drift-menu" hidden>
+    <div class="dm-item" id="dm-wall">Next wallpaper</div>
+    <div class="dm-item" id="dm-score">Drift Score</div>
+    <div class="dm-sep"></div>
+    <div class="dm-item" id="dm-about">About This Drift</div>
   </div>
 
   <div id="dock" hidden></div>

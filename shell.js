@@ -13,8 +13,133 @@ export const shell = {
     this.renderDock();
     this.wireSpotlight();
     this.wireMenubar();
+    this.wireAppMenus();
+    this.wireContextMenu();
+    this.applyWallpaper(true);
     bus.on('wm:changed', () => this.renderDock());
     bus.on('notify', msg => this.toast(String(msg)));
+  },
+
+  applyWallpaper(initial) {
+    const WALLS = ['Sonoma Dusk', 'Ventura Waves', 'Big Sur Fog'];
+    const CLASSES = ['wp-a', 'wp-b', 'wp-c'];
+    let idx = Number(localStorage.getItem('drift:wall') || '0');
+    if (!Number.isInteger(idx) || idx < 0 || idx >= CLASSES.length) idx = 0;
+    if (!initial) idx = (idx + 1) % CLASSES.length;
+    localStorage.setItem('drift:wall', String(idx));
+    const wp = document.getElementById('wallpaper');
+    wp.classList.remove('wp-b', 'wp-c', 'wp-a');
+    wp.classList.add(CLASSES[idx]);
+    bus.emit('notify', 'Wallpaper: ' + WALLS[idx]);
+  },
+
+  wireAppMenus() {
+    const drop = document.createElement('div');
+    drop.id = 'mb-drop';
+    drop.hidden = true;
+    document.body.appendChild(drop);
+    this._drop = drop;
+    this._dropOpen = null;
+
+    const closeDrop = () => {
+      drop.hidden = true;
+      this._dropOpen = null;
+      document.querySelectorAll('.mb-menu.open').forEach(el => el.classList.remove('open'));
+    };
+    this._closeDrop = closeDrop;
+
+    const MENUS = {
+      drift: [
+        ['About This Drift', () => {
+          document.getElementById('about').hidden = false;
+          document.getElementById('about-windows').textContent = String(WM.all().length);
+        }],
+        ['Next Wallpaper...', () => this.applyWallpaper(false)],
+        ['Spotlight  Ctrl Space', () => toggleSpotlight()],
+        ['Restart', () => location.reload()]
+      ],
+      apps: () => getApps().map(a => [a.name + '...', () => launch(a.id)]),
+      window: () => {
+        const active = WM.all().find(w => w.classList.contains('active'));
+        return [
+          ['Minimize Front Window', () => WM.minimize(active)],
+          ['Zoom Front Window', () => WM.zoom(active)],
+          ['Close Front Window', () => WM.close(active)]
+        ];
+      }
+    };
+
+    document.querySelectorAll('.mb-menu').forEach(el => {
+      el.addEventListener('mousedown', e => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (this._dropOpen === el) { closeDrop(); return; }
+        const items = typeof MENUS[el.dataset.menu] === 'function' ? MENUS[el.dataset.menu]() : MENUS[el.dataset.menu];
+        drop.innerHTML = '';
+        items.forEach(([label, fn]) => {
+          const item = document.createElement('div');
+          item.className = 'mb-dd-item';
+          item.textContent = label;
+          item.addEventListener('mousedown', ev => {
+            ev.stopPropagation();
+            fn();
+            closeDrop();
+          });
+          drop.appendChild(item);
+        });
+        if (!drop.children.length) {
+          const none = document.createElement('div');
+          none.className = 'mb-dd-none';
+          none.textContent = 'no windows open';
+          drop.appendChild(none);
+        }
+        drop.hidden = false;
+        const r = el.getBoundingClientRect();
+        drop.style.left = r.left + 'px';
+        drop.style.top = Math.max(0, r.bottom + 4) + 'px';
+        this._dropOpen = el;
+        el.classList.add('open');
+      });
+    });
+
+    document.addEventListener('mousedown', closeDrop);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeDrop();
+    });
+  },
+
+  wireContextMenu() {
+    const menu = document.getElementById('drift-menu');
+    const wall = document.getElementById('wallpaper');
+
+    wall.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      menu.hidden = false;
+      const w = menu.offsetWidth || 200;
+      const h = menu.offsetHeight || 130;
+      menu.style.left = Math.min(e.clientX, window.innerWidth - w - 8) + 'px';
+      menu.style.top = Math.min(e.clientY, window.innerHeight - h - 8) + 'px';
+    });
+
+    menu.addEventListener('mousedown', e => e.stopPropagation());
+    document.addEventListener('mousedown', () => { menu.hidden = true; });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') menu.hidden = true;
+    });
+
+    document.getElementById('dm-wall').addEventListener('mousedown', () => {
+      this.applyWallpaper(false);
+      menu.hidden = true;
+    });
+    document.getElementById('dm-score').addEventListener('mousedown', () => {
+      launch('drift');
+      menu.hidden = true;
+    });
+    document.getElementById('dm-about').addEventListener('mousedown', () => {
+      document.getElementById('about').hidden = false;
+      document.getElementById('about-windows').textContent = String(WM.all().length);
+      menu.hidden = true;
+    });
   },
 
   startClock() {

@@ -34,11 +34,23 @@ export default {
       if (!cmd) return;
       print('> ' + cmd);
       const [name, ...args] = cmd.split(' ');
-      if (name === 'help') print('help  echo  date  clear  about');
+      if (name === 'help') print('help  echo  date  clear  about  drift');
       else if (name === 'echo') print(args.join(' '));
       else if (name === 'date') print(new Date().toString());
       else if (name === 'clear') out.textContent = '';
       else if (name === 'about') print('Drift OS v0.2 —a web OS in vanilla JS.');
+      else if (name === 'drift') {
+        print('');
+        print('        ___   __________     __');
+        print('      /   | |___  ___  /   / /   🏁 apex now!');
+        print('     / /| |    / /  / /   / /');
+        print('    / ___ |   / /  / /___/ /___  *snoooort*');
+        print('   /_/  |_|  /_/  /_____/|_____|');
+        print('');
+        print('  best way to earn points → open Drift Score from the Dock');
+        print('  or right-click the desktop for drift wallpapers.');
+        print('');
+      }
       else print('command not found: ' + name);
     });
 
